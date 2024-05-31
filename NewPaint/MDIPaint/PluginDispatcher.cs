@@ -108,8 +108,8 @@ namespace MDIPaint
             // Получаем путь к текущему рабочему каталогу приложения.
             string folder = AppDomain.CurrentDomain.BaseDirectory;
 
-            // Получаем все файлы в рабочем каталоге, которые заканчиваются на "Library.dll".
-            string[] files = Directory.GetFiles(folder, "*Library.dll");
+            // Получаем все файлы в рабочем каталоге, которые заканчиваются на "Plugin.dll".
+            string[] files = Directory.GetFiles(folder, "*Plugin.dll");
 
             // Перебираем все найденные файлы плагинов.
             foreach (string pluginFile in files)

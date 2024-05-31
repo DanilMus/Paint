@@ -45,7 +45,9 @@ namespace MDIPaint
             Color = Color.Black;
             Width = 3;
 
-            // Проверка подлючения плагинов
+            // Работа с плагинами
+            PluginDispatcher.LoadPlugins();
+            CreatePluginsMenu();
             if (PluginDispatcher.Plugins.Count() != 0) ShowLoadedPlugins();
         }
 
@@ -59,6 +61,32 @@ namespace MDIPaint
             }
 
             MessageBox.Show(message, "Загруженные плагины", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        // Добавление фильтров (т.е. плагинов для работы)
+        private void CreatePluginsMenu()
+        {
+            // Переходим по всем плагинам
+            foreach (var p in PluginDispatcher.Plugins)
+            {
+                // Добавляем вниз меню фильров фильтр (плагин)
+                var item = фильтрыToolStripMenuItem.DropDownItems.Add(p.Value.Name);
+                // Добавляем возможность кликать
+                item.Click += OnPluginClick;
+                // Проверяем возможность показа кнопки
+                item.Visible = PluginDispatcher.Statuses[p.Key] ? true : false;
+            }
+        }
+        // Возможность кликать по кнопки фильтра (плагина)
+        public void OnPluginClick(object sender, EventArgs e)
+        {
+            IPlugin plugin = PluginDispatcher.Plugins[((ToolStripMenuItem)sender).Text];
+            if (ActiveMdiChild != null)
+            {
+                var activeDocumentForm = (DocumentForm)ActiveMdiChild;
+                plugin.Transform(activeDocumentForm.Bitmap);
+                activeDocumentForm.Refresh();
+            }
         }
 
         // Выход из приложения

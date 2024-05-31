@@ -24,7 +24,7 @@ namespace MDIPaint
 
         // Для рисования
         private int x, y;
-        private Bitmap bitmap;
+        public Bitmap Bitmap { get; private set; }
         private Pen pen;
         private bool isMouseDown = false;
         // Для рисования звезды
@@ -37,8 +37,7 @@ namespace MDIPaint
         private static int count = 0;
         private int ID;
 
-        
-        
+
 
         public DocumentForm()
         {
@@ -50,9 +49,9 @@ namespace MDIPaint
             ID = count;
 
             // Инициализируем поле, по которому будем рисовать и устанавливаем фон белым
-            bitmap = new Bitmap(this.Width, this.Height);
+            Bitmap = new Bitmap(this.Width, this.Height);
             this.BackColor = Color.White;
-            using (Graphics g = Graphics.FromImage(bitmap))
+            using (Graphics g = Graphics.FromImage(Bitmap))
                 g.Clear(this.BackColor);
 
 
@@ -73,12 +72,12 @@ namespace MDIPaint
             using (Graphics g = Graphics.FromImage(newBitmap))
             {
                 g.Clear(this.BackColor); // Не забываем установить фон 
-                g.DrawImage(bitmap, 0, 0);
+                g.DrawImage(Bitmap, 0, 0);
             }
 
             // Уничтожаем старую битмапу и заменяем новой
-            bitmap.Dispose();
-            bitmap = newBitmap;
+            Bitmap.Dispose();
+            Bitmap = newBitmap;
 
             // Обновляем размеры формы
             this.Width = Width;
@@ -89,7 +88,7 @@ namespace MDIPaint
         // Увеличение/Уменьшение изображения
         public void Zoom(float scale)
         {
-            Bitmap zoomedBitmap = new Bitmap((int)(bitmap.Width * scale), (int)(bitmap.Height*scale));
+            Bitmap zoomedBitmap = new Bitmap((int)(Bitmap.Width * scale), (int)(Bitmap.Height*scale));
 
             using (Graphics g = Graphics.FromImage(zoomedBitmap))
             {
@@ -97,15 +96,15 @@ namespace MDIPaint
                 g.ScaleTransform(scale, scale);
 
                 // Рисуем старый битмап в новом формате
-                g.DrawImage(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+                g.DrawImage(Bitmap, new Rectangle(0, 0, Bitmap.Width, Bitmap.Height));
             }
 
             // Заменяем
-            bitmap = zoomedBitmap;
+            Bitmap = zoomedBitmap;
 
             // Изменяем размер формы
-            this.Width = bitmap.Width;
-            this.Height = bitmap.Height;
+            this.Width = Bitmap.Width;
+            this.Height = Bitmap.Height;
 
             // И перерисовываем ее
             this.Invalidate();
@@ -122,11 +121,11 @@ namespace MDIPaint
             filePath = openFileDialog.FileName;
             format = ff[openFileDialog.FilterIndex - 1];
             using (var bmpTemp = new Bitmap(openFileDialog.FileName)) 
-                bitmap = new Bitmap(bmpTemp);
+                Bitmap = new Bitmap(bmpTemp);
 
             // Обновляем размеры формы
-            this.Width = bitmap.Width;
-            this.Height = bitmap.Height;
+            this.Width = Bitmap.Width;
+            this.Height = Bitmap.Height;
 
             return true;
         }
@@ -153,7 +152,7 @@ namespace MDIPaint
                 this.filePath = dlg.FileName;
                 this.format = ff[dlg.FilterIndex - 1];
 
-                this.bitmap.Save(this.filePath, this.format);
+                this.Bitmap.Save(this.filePath, this.format);
             }
             else
                 return false;
@@ -170,7 +169,7 @@ namespace MDIPaint
 
             // Если есть, куда сохранять, то сохраняем
             if (filePath != null && format != null)
-                this.bitmap.Save(this.filePath, this.format);
+                this.Bitmap.Save(this.filePath, this.format);
             // Если нет, то просто вызываем ранее показанный вариант
             else
                 return SaveAs();
@@ -215,7 +214,7 @@ namespace MDIPaint
             if (isMouseDown && (MainForm.Tool == Tool.Pen || MainForm.Tool == Tool.Eraser))
             {
                 // Берем "картинку"
-                Graphics g = Graphics.FromImage(bitmap);
+                Graphics g = Graphics.FromImage(Bitmap);
 
                 // и начинаем ее изменять в зависимости от параметров и инструментов,
                 // которые выбираем
@@ -243,7 +242,7 @@ namespace MDIPaint
             if (isMouseDown && MainForm.Tool != Tool.Pen && MainForm.Tool != Tool.Eraser)
             {
                 // Берем "картинку"
-                Graphics g = Graphics.FromImage(bitmap);
+                Graphics g = Graphics.FromImage(Bitmap);
 
                 // и начинаем ее изменять в зависимости от параметров и инструментов,
                 // которые выбираем
@@ -272,7 +271,7 @@ namespace MDIPaint
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            e.Graphics.DrawImage(bitmap, 0, 0);
+            e.Graphics.DrawImage(Bitmap, 0, 0);
         }
 
 
@@ -316,7 +315,7 @@ namespace MDIPaint
             }
 
             // Ну и рисуем это дело
-            Graphics g = Graphics.FromImage(bitmap);
+            Graphics g = Graphics.FromImage(Bitmap);
             g.DrawPolygon(pen, points);
         }
     }
