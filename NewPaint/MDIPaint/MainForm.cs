@@ -11,6 +11,8 @@ using System.Windows.Forms;
 
 using PluginInterface;
 using NewPaint.MDIPaint;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using NewPaint;
 
 //
 // Основная форма, где происходит взаимодействие
@@ -32,23 +34,47 @@ namespace MDIPaint
     {
         // Аргументы для выранного инструмента
         public static Color Color { get; set; }
-        public static int Width { get; set; }
+        public static int ToolWidth { get; set; }
         public static Tool Tool { get; set; }
         // Список плагинов для изменения изображения
         private Dictionary<string, IPlugin> plugins = new Dictionary<string, IPlugin>();
 
 
+
         public MainForm()
         {
-            // Выставление базовых настроек
             InitializeComponent();
             Color = Color.Black;
-            Width = 3;
+            ToolWidth = 3;
 
-            // Работа с плагинами
-            PluginDispatcher.LoadPlugins();
-            CreatePluginsMenu();
-            if (PluginDispatcher.Plugins.Count() != 0) ShowLoadedPlugins();
+            // Запуск асинхронной загрузки плагинов с прогрессом
+            LoadPluginsAsync();
+        }
+
+        private async void LoadPluginsAsync()
+        {
+            var loadingForm = new LoadingForm();
+            var progress = new Progress<int>(percent =>
+            {
+                loadingForm.UpdateProgress(percent);
+            });
+
+            // Центрирование формы загрузки внутри MainForm
+            loadingForm.StartPosition = FormStartPosition.Manual;
+            loadingForm.Location = new Point(this.Location.X + (this.Width) / 2,
+                                             this.Location.Y + (this.Height) / 2);
+
+            loadingForm.Show(this); // Отображение LoadingForm внутри MainForm
+
+            try
+            {
+                await PluginDispatcher.LoadPluginsAsync(progress, loadingForm.CancellationTokenSource.Token);
+                CreatePluginsMenu();
+            }
+            catch (OperationCanceledException)
+            {
+                MessageBox.Show("Загрузка плагинов была отменена", "Отмена", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
 
         // Вывод плагинов, которые загрузились
@@ -152,6 +178,7 @@ namespace MDIPaint
         }
 
 
+        // Изменение ширины рисования инструмента
         private void toolStripTextBox1_Click(object sender, EventArgs e)
         {
             var textBox = sender as ToolStripTextBox;
@@ -159,7 +186,7 @@ namespace MDIPaint
             if (textBox != null)
             {
                 bool isNum = Interface.TakeInt(textBox.Text, out int num);
-                Width = isNum ? num : Width;
+                ToolWidth = isNum ? num : ToolWidth;
             }
         }
 

@@ -55,7 +55,7 @@ namespace MDIPaint
                 g.Clear(this.BackColor);
 
 
-            pen = new Pen(MainForm.Color, MainForm.Width);
+            pen = new Pen(MainForm.Color, MainForm.ToolWidth);
             // Делаем линию непрерывистой
             pen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
             pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
@@ -218,7 +218,7 @@ namespace MDIPaint
 
                 // и начинаем ее изменять в зависимости от параметров и инструментов,
                 // которые выбираем
-                pen.Width = MainForm.Width;
+                pen.Width = MainForm.ToolWidth;
                 if (MainForm.Tool == Tool.Pen)
                 {
                     pen.Color = MainForm.Color;
@@ -247,7 +247,7 @@ namespace MDIPaint
                 // и начинаем ее изменять в зависимости от параметров и инструментов,
                 // которые выбираем
                 pen.Color = MainForm.Color;
-                pen.Width = MainForm.Width;
+                pen.Width = MainForm.ToolWidth;
                 if (MainForm.Tool == Tool.Line)
                 {
                     g.DrawLine(pen, x, y, e.X, e.Y);
