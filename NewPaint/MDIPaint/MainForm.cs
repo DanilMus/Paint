@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using PluginInterface;
-
+using NewPaint.MDIPaint;
 
 //
 // Основная форма, где происходит взаимодействие
@@ -273,6 +273,14 @@ namespace MDIPaint
         {
             var file = ActiveMdiChild as DocumentForm;
             file.Zoom(0.8f);
+        }
+
+
+        // Открытие окна настроек плагинов
+        private void настройкиToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var form = new PluginForm(this);
+            form.ShowDialog();
         }
     }
 }

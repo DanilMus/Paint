@@ -50,6 +50,8 @@
             масштабToolStripMenuItem1 = new ToolStripMenuItem();
             справкаToolStripMenuItem = new ToolStripMenuItem();
             оПрограммеToolStripMenuItem = new ToolStripMenuItem();
+            фильтрыToolStripMenuItem = new ToolStripMenuItem();
+            настройкиToolStripMenuItem = new ToolStripMenuItem();
             toolStrip1 = new ToolStrip();
             toolStripDropDownButton1 = new ToolStripDropDownButton();
             красныйToolStripMenuItem = new ToolStripMenuItem();
@@ -66,8 +68,6 @@
             toolStripSeparator3 = new ToolStripSeparator();
             toolStripLabel1 = new ToolStripLabel();
             toolStripTextBox1 = new ToolStripTextBox();
-            фильтрыToolStripMenuItem = new ToolStripMenuItem();
-            настройкиToolStripMenuItem = new ToolStripMenuItem();
             menuStrip1.SuspendLayout();
             toolStrip1.SuspendLayout();
             SuspendLayout();
@@ -79,7 +79,7 @@
             menuStrip1.MdiWindowListItem = окноToolStripMenuItem;
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(7, 2, 0, 2);
-            menuStrip1.Size = new Size(904, 24);
+            menuStrip1.Size = new Size(908, 24);
             menuStrip1.TabIndex = 1;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -218,12 +218,26 @@
             оПрограммеToolStripMenuItem.Text = "О программе...";
             оПрограммеToolStripMenuItem.Click += оПрограммеToolStripMenuItem_Click;
             // 
+            // фильтрыToolStripMenuItem
+            // 
+            фильтрыToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { настройкиToolStripMenuItem });
+            фильтрыToolStripMenuItem.Name = "фильтрыToolStripMenuItem";
+            фильтрыToolStripMenuItem.Size = new Size(69, 20);
+            фильтрыToolStripMenuItem.Text = "Фильтры";
+            // 
+            // настройкиToolStripMenuItem
+            // 
+            настройкиToolStripMenuItem.Name = "настройкиToolStripMenuItem";
+            настройкиToolStripMenuItem.Size = new Size(180, 22);
+            настройкиToolStripMenuItem.Text = "Настройки";
+            настройкиToolStripMenuItem.Click += настройкиToolStripMenuItem_Click;
+            // 
             // toolStrip1
             // 
             toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripDropDownButton1, toolStripSeparator1, toolStripSplitButton1, toolStripSeparator3, toolStripLabel1, toolStripTextBox1 });
             toolStrip1.Location = new Point(0, 24);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(904, 25);
+            toolStrip1.Size = new Size(908, 25);
             toolStrip1.TabIndex = 3;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -337,31 +351,18 @@
             toolStripTextBox1.Size = new Size(116, 25);
             toolStripTextBox1.Click += toolStripTextBox1_Click;
             // 
-            // фильтрыToolStripMenuItem
-            // 
-            фильтрыToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { настройкиToolStripMenuItem });
-            фильтрыToolStripMenuItem.Name = "фильтрыToolStripMenuItem";
-            фильтрыToolStripMenuItem.Size = new Size(69, 20);
-            фильтрыToolStripMenuItem.Text = "Фильтры";
-            // 
-            // настройкиToolStripMenuItem
-            // 
-            настройкиToolStripMenuItem.Name = "настройкиToolStripMenuItem";
-            настройкиToolStripMenuItem.Size = new Size(180, 22);
-            настройкиToolStripMenuItem.Text = "Настройки";
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(904, 646);
+            ClientSize = new Size(908, 635);
             Controls.Add(toolStrip1);
             Controls.Add(menuStrip1);
             IsMdiContainer = true;
             MainMenuStrip = menuStrip1;
             Margin = new Padding(4, 3, 4, 3);
             Name = "MainForm";
-            Text = "MainForm";
+            Text = "Paint";
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             toolStrip1.ResumeLayout(false);
@@ -409,8 +410,8 @@
         private System.Windows.Forms.ToolStripMenuItem масштабToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem масштабToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem звездаToolStripMenuItem;
-        private ToolStripMenuItem фильтрыToolStripMenuItem;
         private ToolStripMenuItem настройкиToolStripMenuItem;
+        public ToolStripMenuItem фильтрыToolStripMenuItem;
     }
 }
 

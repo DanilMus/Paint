@@ -37,8 +37,8 @@ namespace MDIPaint
             // Проходимся по всем ключам в коллекции настроек приложения.
             foreach (string? key in appSettings.AllKeys)
             {
-                // Проверяем, что ключ не равен null и заканчивается на "Library.dll".
-                if (key != null && key.EndsWith("Library.dll"))
+                // Проверяем, что ключ не равен null и заканчивается на "Plugin.dll".
+                if (key != null && key.EndsWith("Plugin.dll"))
                 {
                     // Сохраняем имя файла плагина.
                     string name = key;
@@ -128,5 +128,95 @@ namespace MDIPaint
             config.Save(ConfigurationSaveMode.Modified);
         }
 
+        // Изменения статуса активности плагина
+        public static void ChangePluginStatus(string name)
+        {
+            // Открываем конфигурацию приложения
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+            // Получаем тип плагина
+            Type pluginType = Plugins[name].GetType();
+
+            // Получаем сборку, в которой определен тип плагина
+            Assembly assembly = pluginType.Assembly;
+
+            // Получаем имя сборки
+            string assemblyName = assembly.GetName().Name;
+
+            // Проверяем, есть ли настройка для данной сборки в конфигурации
+            if (config.AppSettings.Settings[$"{assemblyName}.dll"] != null)
+            {
+                // Меняем значение настройки на противоположное
+                config.AppSettings.Settings[$"{assemblyName}.dll"].Value =
+                    config.AppSettings.Settings[$"{assemblyName}.dll"].Value == "true" ? "false" : "true";
+
+                // Меняем статус плагина на противоположный
+                Statuses[name] = !Statuses[name];
+
+                // Сохраняем изменения в конфигурации
+                config.Save(ConfigurationSaveMode.Modified);
+
+                // Обновляем секцию "appSettings" в конфигурации
+                ConfigurationManager.RefreshSection("appSettings");
+            }
+        }
+
+
+        // Удаление плагина
+        public static void DeletePlugin(string name)
+        {
+            // Открываем конфигурацию приложения
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+            // Получаем тип плагина
+            Type pluginType = Plugins[name].GetType();
+
+            // Получаем сборку, в которой определен тип плагина
+            Assembly assembly = pluginType.Assembly;
+
+            // Получаем имя сборки
+            string assemblyName = assembly.GetName().Name;
+
+            // Проверяем, есть ли настройка для данной сборки в конфигурации
+            if (config.AppSettings.Settings[$"{assemblyName}.dll"] != null)
+            {
+                // Удаляем настройку из конфигурации
+                config.AppSettings.Settings.Remove($"{assemblyName}.dll");
+
+                // Удаляем статус плагина
+                Statuses.Remove(name);
+
+                // Удаляем плагин
+                Plugins.Remove(name);
+
+                // Сохраняем изменения в конфигурации
+                config.Save(ConfigurationSaveMode.Modified);
+
+                // Обновляем секцию "appSettings" в конфигурации
+                ConfigurationManager.RefreshSection("appSettings");
+            }
+        }
+
+        // Добавление плагина
+        public static IPlugin? AddPlugin(string pluginPath)
+        {
+            // Получаем имя файла без расширения из пути к плагину
+            string pluginName = Path.GetFileNameWithoutExtension(pluginPath);
+
+            // Открываем конфигурацию приложения
+            Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+
+            // Добавляем в настройки приложения информацию о плагине
+            config.AppSettings.Settings.Add(pluginName + ".dll", "true");
+
+            // Сохраняем изменения в конфигурации
+            config.Save(ConfigurationSaveMode.Modified);
+
+            // Обновляем раздел настроек приложения
+            ConfigurationManager.RefreshSection("appSettings");
+
+            // Загружаем плагин
+            return LoadPlugin(pluginPath, true);
+        }
     }
 }
