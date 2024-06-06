@@ -103,6 +103,8 @@ namespace MDIPaint
                 item.Visible = PluginDispatcher.Statuses[p.Key] ? true : false;
             }
         }
+
+
         // Возможность кликать по кнопки фильтра (плагина)
         public void OnPluginClick(object sender, EventArgs e)
         {
@@ -110,10 +112,62 @@ namespace MDIPaint
             if (ActiveMdiChild != null)
             {
                 var activeDocumentForm = (DocumentForm)ActiveMdiChild;
-                plugin.Transform(activeDocumentForm.Bitmap);
-                activeDocumentForm.Refresh();
+                // Запускаем каждый плагин асинхронно
+                ExecutePluginAsync(plugin, activeDocumentForm);
             }
         }
+
+
+        private async void ExecutePluginAsync(IPlugin plugin, DocumentForm documentForm)
+        {
+            using (var cancellationTokenSource = new CancellationTokenSource())
+            {
+                var pluginProcessingForm = new PluginProcessingForm(plugin.Name, cancellationTokenSource);
+                bool formClosed = false;
+                pluginProcessingForm.FormClosed += (s, e) => formClosed = true;
+                pluginProcessingForm.Show();
+
+                // Создаем копию Bitmap для каждого плагина
+                Bitmap bitmapCopy = (Bitmap)documentForm.Bitmap.Clone();
+
+                try
+                {
+                    await Task.Run(() => plugin.Transform(bitmapCopy, new Progress<int>(percent =>
+                    {
+                        if (!formClosed)
+                        {
+                            pluginProcessingForm.UpdateProgress(percent);
+                        }
+                    }), cancellationTokenSource.Token));
+
+                    // Обновляем оригинальный Bitmap после завершения плагина
+                    using (Graphics g = Graphics.FromImage(documentForm.Bitmap))
+                    {
+                        g.DrawImage(bitmapCopy, 0, 0);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    MessageBox.Show("Операция плагина была отменена", "Операция отмены", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Собрана ошибка: {ex.Message}", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    if (!formClosed)
+                    {
+                        pluginProcessingForm.Close();
+                    }
+                    documentForm.Refresh();
+                    bitmapCopy.Dispose();
+                }
+            }
+        }
+
+
+
 
         // Выход из приложения
         private void выходToolStripMenuItem_Click(object sender, EventArgs e)

@@ -6,20 +6,16 @@ namespace ContrastEnhasmentPlugin
     /// <summary>
     /// Плагин для увелечения контрастности изображения
     /// </summary>
-    [Version(1, 0)]
+    [Version(2, 0)]
     public class ContrastEnhancement : IPlugin
     {
         public string Name => "Увеличение контраста";
-
         public string Author => "Мусихин Данил";
 
-        // Метод для применения эффекта увеличения контраста к переданному изображению
-        public void Transform(Bitmap bitmap)
+        public void Transform(Bitmap bitmap, IProgress<int> progress, CancellationToken cancellationToken)
         {
-            // Получение гистограммы яркости изображения
             int[] histogram = GetHistogram(bitmap);
 
-            // Нахождение минимальной яркости, которая фактически присутствует на изображении
             int minBrightness = 0;
             for (int i = 0; i < 256; i++)
             {
@@ -30,35 +26,31 @@ namespace ContrastEnhasmentPlugin
                 }
             }
 
-            // Коэффициент увеличения контрастности
             double a = 2.0;
-            // Рассчитываем смещение, чтобы увеличение контраста начиналось от минимальной яркости
-            double с = -a * minBrightness;
+            double c = -a * minBrightness;
 
-            // Проход по всем пикселям изображения для изменения контраста
             for (int y = 0; y < bitmap.Height; y++)
             {
                 for (int x = 0; x < bitmap.Width; x++)
                 {
+                    cancellationToken.ThrowIfCancellationRequested();
+
                     Color pixelColor = bitmap.GetPixel(x, y);
 
-                    // Применяем линейное преобразование для увеличения контрастности каждого цветового канала
-                    int r = (int)(a * pixelColor.R + с);
-                    int g = (int)(a * pixelColor.G + с);
-                    int b = (int)(a * pixelColor.B + с);
+                    int r = (int)(a * pixelColor.R + c);
+                    int g = (int)(a * pixelColor.G + c);
+                    int b = (int)(a * pixelColor.B + c);
 
-                    // Ограничение значений цветовых каналов в пределах [0, 255]
                     r = Math.Min(255, Math.Max(0, r));
                     g = Math.Min(255, Math.Max(0, g));
                     b = Math.Min(255, Math.Max(0, b));
 
-                    // Запись измененного цвета обратно в пиксель
                     bitmap.SetPixel(x, y, Color.FromArgb(r, g, b));
                 }
+                progress.Report((int)((float)y / bitmap.Height * 100));
             }
         }
 
-        // Метод для создания гистограммы яркости изображения
         private int[] GetHistogram(Bitmap bitmap)
         {
             int[] histogram = new int[256];
@@ -74,5 +66,4 @@ namespace ContrastEnhasmentPlugin
             return histogram;
         }
     }
-
 }

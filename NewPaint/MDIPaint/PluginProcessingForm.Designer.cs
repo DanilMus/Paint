@@ -1,6 +1,6 @@
 ﻿namespace NewPaint
 {
-    partial class LoadingForm
+    partial class PluginProcessingForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,67 +28,54 @@
         /// </summary>
         private void InitializeComponent()
         {
-            progressBar1 = new ProgressBar();
             label1 = new Label();
+            progressBar1 = new ProgressBar();
             button1 = new Button();
-            button2 = new Button();
             SuspendLayout();
-            // 
-            // progressBar1
-            // 
-            progressBar1.Location = new Point(12, 54);
-            progressBar1.Name = "progressBar1";
-            progressBar1.Size = new Size(346, 25);
-            progressBar1.TabIndex = 0;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 25);
+            label1.Location = new Point(24, 34);
             label1.Name = "label1";
-            label1.Size = new Size(116, 15);
-            label1.TabIndex = 1;
-            label1.Text = "Загрузка плагинов: ";
+            label1.Size = new Size(38, 15);
+            label1.TabIndex = 0;
+            label1.Text = "label1";
+            // 
+            // progressBar1
+            // 
+            progressBar1.Location = new Point(24, 62);
+            progressBar1.Name = "progressBar1";
+            progressBar1.Size = new Size(345, 23);
+            progressBar1.TabIndex = 1;
             // 
             // button1
             // 
-            button1.Location = new Point(12, 99);
+            button1.Location = new Point(294, 102);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 2;
             button1.Text = "Отмена";
             button1.UseVisualStyleBackColor = true;
             // 
-            // button2
-            // 
-            button2.Enabled = false;
-            button2.Location = new Point(229, 99);
-            button2.Name = "button2";
-            button2.Size = new Size(129, 23);
-            button2.TabIndex = 3;
-            button2.Text = "Начать работу";
-            button2.UseVisualStyleBackColor = true;
-            // 
-            // LoadingForm
+            // PluginProcessingForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(370, 134);
-            Controls.Add(button2);
+            ClientSize = new Size(389, 149);
             Controls.Add(button1);
-            Controls.Add(label1);
             Controls.Add(progressBar1);
-            Name = "LoadingForm";
-            Text = "Загрузка ";
+            Controls.Add(label1);
+            Name = "PluginProcessingForm";
+            Text = "PluginProcessingForm";
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private ProgressBar progressBar1;
         private Label label1;
+        private ProgressBar progressBar1;
         private Button button1;
-        private Button button2;
     }
 }

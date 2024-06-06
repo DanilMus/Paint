@@ -14,6 +14,6 @@ namespace PluginInterface
     {
         string Name { get; }
         string Author { get; }
-        void Transform(Bitmap bitmap);
+        void Transform(Bitmap bitmap, IProgress<int> progress, CancellationToken cancellationToken);
     }
 }
